@@ -1,11 +1,14 @@
  import Fastify from "fastify";
  import "dotenv/config"
 import { connectDB } from "./src/config/connect.js";
+import { buildAdminRouter } from "./src/config/setup.js";
 
 const start = async()=>{
      await connectDB(process.env.MONGO_URI);
     const app = Fastify();
-    const PORT = process.env.PORT || 3000;
+
+    await buildAdminRouter(app);
+
     app.listen({ port : PORT,host : "0.0.0.0"},
         (err,addr)=>{
             if(err){
