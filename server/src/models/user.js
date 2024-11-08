@@ -48,7 +48,8 @@ const deliveryPartnerSchema = new mongoose.Schema({
 //Admin Schema
 const adminSchema = new mongoose.Schema({
     ...userSchema.obj,
-    email : {type : String, required : true, unique : true},
+    email : {type :String, required : true, unique : true},
+    phone : {type : Number, required : true, unique : true},
     password : {type : String, required : true, unique : true},
     role : {type:String, enum : ["Admin"] , default : "Admin"},
      

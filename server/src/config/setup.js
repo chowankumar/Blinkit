@@ -2,7 +2,7 @@ import AdminJS from "adminjs";
 import AdminFastify from "@adminjs/fastify";
 import * as AdminJsMongoose from "@adminjs/mongoose";
 import * as Models from "../models/index.js";
-import { COOKIE_PASSWORD, sessionStore } from "./config.js";
+import {authenticate, CookiePassword, sessionStore } from "./config.js";
 
 AdminJS.registerAdapter(AdminJsMongoose);
 
@@ -12,22 +12,22 @@ export const admin = new AdminJS(
             {
                 resource: Models.Customer,
                 options: {
-                    listProperties: ["phone", "role", "isActivated"],
-                    filterProperties: ["phone", "role"]
+                    listProperties: ["phone","role","isActivated"],
+                    filterProperties: ["phone","role"]
                 }
             },
             {
                 resource: Models.DeliveryPartner,
                 options: {
-                    listProperties: ["emails", "role", "isActivated"],
+                    listProperties: ["email", "role", "isActivated"],
                     filterProperties: ["phone", "role"]
                 }
             },
             {
                 resource: Models.Admin,
                 options: {
-                    listProperties: ["phone", "role", "isActivated"],
-                    filterProperties: ["phone", "role"]
+                    listProperties:["phone","role","isActivated"],
+                    filterProperties: ["phone","role"]
                 }
             },
             { resource: Models.Branch },
@@ -47,7 +47,7 @@ export const buildAdminRouter = async (app) => {
     await AdminFastify.buildAuthenticatedRouter(admin,
         {
             authenticate,
-            cookiePassword: COOKIE_PASSWORD,
+            cookiePassword:CookiePassword,
             cookieName: "adminjs",
         },
         app,
@@ -55,7 +55,7 @@ export const buildAdminRouter = async (app) => {
 
             store: sessionStore,
             saveUnintialized: true,
-            secret: COOKIE_PASSWORD,
+            secret: CookiePassword,
             cookie: {
                 httpOnly: process.env.NODE_ENV === "production",
                 secure: process.env.NODE_ENV === "production"

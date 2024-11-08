@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { DeliveryPartner } from "./user";
+import { DeliveryPartner } from "./user.js";
 
 const branchSchema = new mongoose.Schema(
     {
@@ -9,7 +9,7 @@ const branchSchema = new mongoose.Schema(
             longitude : {type : Number},
          },
          address : {type : String},
-         deliveryPartners : [
+         deliveryPartner : [
             {
                 type : mongoose.Schema.Types.ObjectId,
                 ref:"DeliveryPartner"
