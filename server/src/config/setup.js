@@ -3,6 +3,7 @@ import AdminFastify from "@adminjs/fastify";
 import * as AdminJsMongoose from "@adminjs/mongoose";
 import * as Models from "../models/index.js";
 import {authenticate, CookiePassword, sessionStore } from "./config.js";
+import {dark,light,noSidebar} from '@adminjs/themes'
 
 AdminJS.registerAdapter(AdminJsMongoose);
 
@@ -39,6 +40,8 @@ export const admin = new AdminJS(
             companyName: "Blinkit",
             withMadeWithLove: false
         },
+        deafualtTheme:dark.id,
+        availableThemes:[dark,light,noSidebar],
         rootPath: "/admin"
     }
 )
@@ -51,8 +54,7 @@ export const buildAdminRouter = async (app) => {
             cookieName: "adminjs",
         },
         app,
-        {
-
+        {   
             store: sessionStore,
             saveUnintialized: true,
             secret: CookiePassword,
@@ -60,6 +62,5 @@ export const buildAdminRouter = async (app) => {
                 httpOnly: process.env.NODE_ENV === "production",
                 secure: process.env.NODE_ENV === "production"
             }
-        })
-
-}
+        }
+    )}
