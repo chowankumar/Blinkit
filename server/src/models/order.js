@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import Counter from "./counter.js";
-import { DeliveryPartner } from "./user";
+import { DeliveryPartner } from "./user.js";
 
 const orderSchema = new mongoose.Schema({
     orderId: {
@@ -70,9 +70,9 @@ const orderSchema = new mongoose.Schema({
 
 });
 
-async function getNextSequenceValue(SequneceName){
+async function getNextSequenceValue(sequneceName){
     const sequenceDocument = await Counter.findOneAndUpdate(
-        {name:SequneceName},
+        {name:sequneceName},
         {$inc: {sequence_value : 1}},
         {new: true, upsert: true}
 
