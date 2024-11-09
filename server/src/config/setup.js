@@ -27,11 +27,13 @@ export const admin = new AdminJS(
             {
                 resource: Models.Admin,
                 options: {
-                    listProperties:["phone","role","isActivated"],
-                    filterProperties: ["phone","role"]
+                    listProperties:["email","role","isActivated"],
+                    filterProperties: ["email","role"]
                 }
             },
             { resource: Models.Branch },
+            { resource: Models.Product },
+            { resource: Models.Category },
 
 
         ],
