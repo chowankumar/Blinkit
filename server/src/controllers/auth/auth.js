@@ -48,4 +48,40 @@ export const loginCustomer = async(req,reply)=>{
         return reply.status(500).send({message : "an error accoured in login",error})
         
     }
+};
+
+
+export const loginDeliveryPartner  = async(req,reply)=>{
+    try {
+        const  {email,password} = req.body;
+        let deliveryPartner = await  DeliveryPartner.findOne({email});
+
+        if(!deliveryPartner){
+          return reply
+          .status(404)
+          .send({message : "Delivery partner not found",error})
+        }
+
+        const isMatch = password === deliveryPartner.password;
+
+        if(!isMatach){
+            return reply
+            .status(400)
+            .send({message : "Invalid cradentials"})
+        }
+
+
+        const {accessToken,refreshToken}= generateTokens(deliveryPartner);
+        
+        return reply.send({
+          message : "Login Successfully ",
+          accessToken,
+          refreshToken,
+          deliveryPartner,
+        })
+    } catch (error) {
+
+        return reply.status(500).send({message : "an error accoured in login",error})
+        
+    }
 }
