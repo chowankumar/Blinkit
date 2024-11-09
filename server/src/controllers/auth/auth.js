@@ -85,3 +85,43 @@ export const loginDeliveryPartner  = async(req,reply)=>{
         
     }
 }
+
+export const refreshToken = async(req,reply)=>{
+
+    const {refreshToken} = req.body;
+    if(!refreshToken){
+        return reply.status(401).send({message:"refresh token required"})
+    }
+    try {
+        const decoded = jwt.verify(refreshToken,process.env.REFRESH_TOKEN_SECRET);
+
+        let user;
+        if(decoded.role === "Customer"){
+            user = await Customer.findById(decoded.userId);
+        }else if(decoded.role === "DeliveryPartner"){
+            user = await DeliveryPartner.findById(decoded.userId);
+
+        }else{
+            return reply.status(403).send({message:"invalid role"})
+        }
+
+        if(!user){
+            return reply
+            .status(403)
+            .message("invalid refresh token")
+        }
+
+        const {accessToken,refreshToken:newRefreshToken}= generateTokens(user);
+        return reply.send({
+            message:"Token",
+            accessToken,
+            refreshToken:newRefreshToken
+        })
+        
+    } catch (error) {
+       return reply
+       .status(403)
+       .send({message:"invalid refresh token"}) 
+    }
+
+}
