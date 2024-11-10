@@ -1,5 +1,5 @@
-import { fetchUser, loginCustomer, loginDeliveryPartner } from "../controllers/auth/auth";
-import { verifyToken } from "../middleware/auth";
+import { fetchUser, loginCustomer, loginDeliveryPartner } from "../controllers/auth/auth.js";
+import { verifyToken } from "../middleware/auth.js";
 
 
 export const authRoutes = async (fastify,options)=>{
