@@ -84,8 +84,46 @@ export const confirmOrder = async(req,reply)=>{
 
 export const updateOrderStatus = async(req,reply)=>{
     try {
+        const {orderId} = req.params;
+        const {status,deliveryPersonLocation} = req.body;
+
+        const {userId} = req.users;
+
+        const deliveryPerson = await DeliveryPartner.findById(userId);
+
+        if(!deliveryPerson){
+            return reply.status(404).send({messages:"deliveryPerson not found"})}
+
+        const order = await Order.findById(orderId);
+
+
+        if(!order) return reply.status(404).send({messages:"Order not found"});
+
+
+        if(['cancelled','delivered'].includes(order.status)){ return reply.status(400).send({messages:"Order  can not be updated" })
+        }
+
+        if(order.deliveryPartner.toString() !== userId){
+            return reply.status(400).send({messages:"Order  can not be updated" })
+
+        }
+     
+     
+        order.status = status;
+        
+        
+        order.deliveryLocation = deliveryPersonLocation;
+
+
+             
+        await order.save();
+
+        return reply.send(order);
         
     } catch (error) {
+        return reply.status(500).send({messages:"failed to update the order status"})
         
     }
 }
+
+
