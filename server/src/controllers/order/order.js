@@ -1,5 +1,7 @@
 
-import Order from "../../models/order"; import Branch from "../../models/branch.js"; import { Customer } from "../../models/user.js";
+import Order from "../../models/order"; import Branch from "../../models/branch.js"; import { Customer, DeliveryPartner } from "../../models/user.js";
+
+
 export const createOrder = async (req, reply) => {
     try {
         const { userId } = req.user;
@@ -38,5 +40,52 @@ export const createOrder = async (req, reply) => {
     }
     catch (error) {
         return reply.status(500).send({ message: "failed to create the order" })
+    }
+};
+
+
+export const confirmOrder = async(req,reply)=>{
+    try {
+        const {orderId} = req.params;
+        const{userId} = req.user;
+        const{deliveryPersonLocation} = req.body;
+
+
+        const deliveryPerson = await DeliveryPartner.findByOdId(userId);
+        if(!deliveryPerson){
+            return reply.status(404).send({message:"delivery person not found"})
+        }
+        const order = await Order.findById(orderId);
+
+
+        if(!order) return reply.status(404).send({messages:"order not found"});
+
+
+        if(!order.status !=='available'){ return reply.status(400).send({messages:"Order is not available"})
+        }
+     
+        order.status = 'confirmed';
+        
+        order.deliveryPartner = userId;
+        order.deliveryLocation={
+            latitude:deliveryPersonLocation?.latitude,
+            longitude:deliveryPersonLocation?.longitude,
+            address:deliveryPersonLocation.address || ""
+        }
+        
+        await order.save();
+
+        return reply.send(order);
+    } catch (error) {
+        return reply.status(500).send({messages:"failed to confirm order"})
+    }
+}
+
+
+export const updateOrderStatus = async(req,reply)=>{
+    try {
+        
+    } catch (error) {
+        
     }
 }
