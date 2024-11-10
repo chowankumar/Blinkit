@@ -125,3 +125,32 @@ export const refreshToken = async(req,reply)=>{
     }
 
 }
+
+export const fetchUser = async (req,reply)=>{
+    try {
+        const {userId,role} = req.body;
+        let user;
+
+        if(decoded.role === "Customer"){
+            user = await Customer.findById(decoded.userId);
+        }else if(decoded.role === "DeliveryPartner"){
+            user = await DeliveryPartner.findById(decoded.userId);
+
+        }else{
+            return reply.status(403).send({message:"invalid role"})
+        }
+
+        if(!user){
+            return reply
+            .status(403)
+            .message("invalid refresh token")
+        }
+
+
+
+    } catch (error) {
+        return reply
+        .status(500)
+        .send({message:"an error accoured",error})
+    }
+}
