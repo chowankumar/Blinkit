@@ -114,8 +114,6 @@ export const updateOrderStatus = async(req,reply)=>{
         
         order.deliveryLocation = deliveryPersonLocation;
 
-
-             
         await order.save();
 
         return reply.send(order);
@@ -125,5 +123,39 @@ export const updateOrderStatus = async(req,reply)=>{
         
     }
 }
+
+
+export const getOrder = async(req,reply)=>{
+    try {
+        const {status,customerId,deliveryPartnerId,branchId} = req.query;
+        let query = {};
+
+        if(status){
+            query.status = status;
+        }
+        
+        if(customerId){
+            query.customer = customerId;
+
+        }
+        
+        if(deliveryPartnerId){
+            query.deliveryPartner = status
+            query.branch = status;
+
+        }
+
+        const orders = await Order.find(query).populate("customer bracnh items.item deliveryPartner")
+
+        return reply.send(orders)
+
+        
+    } catch (error) {
+        return reply
+        .status(500)
+        .send({messages:"Failed to retrieve orders"})
+    }
+}
+
 
 
