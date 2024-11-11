@@ -1,5 +1,7 @@
 
-import Order from "../../models/order"; import Branch from "../../models/branch.js"; import { Customer, DeliveryPartner } from "../../models/user.js";
+import Order from "../../models/order.js"; 
+import Branch from "../../models/branch.js"; 
+import { Customer, DeliveryPartner } from "../../models/user.js";
 
 
 export const createOrder = async (req, reply) => {
@@ -7,7 +9,7 @@ export const createOrder = async (req, reply) => {
         const { userId } = req.user;
         const { items, branch, totalPrice } = req.body;
         const customerData = await Customer.findById(userId)
-        const brachData = await Branch.find(branch);
+        const brachData = await Branch.findById(branch);
         if (!customerData) {
             return reply.status(404).send({ message: "Customer not found" })
         }
@@ -24,8 +26,8 @@ export const createOrder = async (req, reply) => {
             branch,
             totalPrice,
             deliveryLocation:{
-                latitude:customerData.liveLocation.latitude,
-                longitude:customerData.liveLocation.longitude,
+                latitude:customerData.location.latitude,
+                longitude:customerData.location.longitude,
                 address:customerData.address || "No address available"
             },
             pickupLocation:{
@@ -139,7 +141,7 @@ export const getOrders = async(req,reply)=>{
         }
         
         if(deliveryPartnerId){
-            query.deliveryPartner = status
+            query.deliveryPartner =  deliveryPartnerId;
             query.branch = branchId;
 
         }
